@@ -1,7 +1,7 @@
 #!/bin/bash -x
 ASA=ansible-service-account
 FQDN=spica.localdomain
-sudo dnf install -y ansible git python-netaddr
+sudo dnf install -y ansible git python-netaddr golang-github-cloudflare-cfssl
 cd ~
 git clone https://github.com/kubernetes/contrib.git
 cd contrib/ansible
@@ -42,8 +42,15 @@ sudo su $ASA -c "cat ~$ASA/.ssh/id_rsa.pub > ~$ASA/.ssh/authorized_keys; chmod 6
 sudo usermod -a -G wheel ansible-service-account
 
 # Fixes
+
 # 1. libselinux-python has been named python3-libselinux since Fedora 31
 # https://github.com/kubernetes-sigs/kubespray/issues/5622
-sed -i 's/    - libselinux-python/    - python3-libselinux\n    - ebtables\n    - device-mapper-libs/'  ./roles/pre-ansible/tasks/fedora-dnf.yml
+sed -i 's/    - libselinux-python/    - python3-libselinux\n    - ebtables\n    - device-mapper-libs\n/'  ./roles/pre-ansible/tasks/fedora-dnf.yml
+
+# 2. etcd
+dnf -y install golang-github-cloudflare-cfssl
+sed -i 's/^node_ips.*/node_ips=${NODE_IPS[0]}/' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
+sed -i 's/^curl.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
+sed -i 's/^chmod.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
