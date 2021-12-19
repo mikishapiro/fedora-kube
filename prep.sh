@@ -40,4 +40,10 @@ EOF
 "
 sudo su $ASA -c "cat ~$ASA/.ssh/id_rsa.pub > ~$ASA/.ssh/authorized_keys; chmod 600 ~$ASA/.ssh/authorized_keys"
 sudo usermod -a -G wheel ansible-service-account
+
+# Fixes
+# 1. libselinux-python has been named python3-libselinux since Fedora 31
+# https://github.com/kubernetes-sigs/kubespray/issues/5622
+sed -i 's/    - libselinux-python/    - python3-libselinux\n    - ebtables\n    - device-mapper-libs/'  ./roles/pre-ansible/tasks/fedora-dnf.yml
+
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
