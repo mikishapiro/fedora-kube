@@ -17,7 +17,6 @@ kube-node-01.example.com
 kube-node-02.example.com
 EOF
 cat > inventory/1way.ini << EOF
-[miki@spica fedora-kube]$ cat /home/miki/contrib/ansible/inventory/inventory
 [masters]
 spica.localdomain ansible_connection=local
 
