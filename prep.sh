@@ -53,4 +53,9 @@ sed -i 's/^node_ips.*/node_ips=${NODE_IPS[0]}/' ~/contrib/ansible/roles/etcd/fil
 sed -i 's/^curl.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 sed -i 's/^chmod.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 
+# 3. docker
+sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
+sudo mkdir -p /etc/docker
+
+
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
