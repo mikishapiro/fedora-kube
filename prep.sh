@@ -27,7 +27,7 @@ spica.localdomain ansible_connection=local
 [etcd]
 spica.localdomain ansible_connection=local
 EOF
-ln -nfs inventory/1way.ini inventory
+ln -nfs 1way.ini inventory/inventory
 cp -vrfp all.yml inventory/group_vars/all.yml
 sudo useradd $ASA
 sudo su $ASA -c "ssh-keygen -b 2048 -q -N '' -t rsa -f ~$ASA/.ssh/id_rsa 0>&-"
