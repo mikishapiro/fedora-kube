@@ -16,7 +16,19 @@ kube-master.example.com
 kube-node-01.example.com
 kube-node-02.example.com
 EOF
+cat > inventory/1way.ini << EOF
+[miki@spica fedora-kube]$ cat /home/miki/contrib/ansible/inventory/inventory
+[masters]
+spica.localdomain ansible_connection=local
 
+[nodes]
+spica.localdomain ansible_connection=local
+
+[etcd]
+spica.localdomain ansible_connection=local
+EOF
+ln -nfs inventory/1way.ini inventory
+cp -vrfp all.yml inventory/group_vars/all.yml
 sudo useradd $ASA
 sudo su $ASA -c "ssh-keygen -b 2048 -q -N '' -t rsa -f ~$ASA/.ssh/id_rsa 0>&-"
 sudo su $ASA ssh localhost
@@ -29,4 +41,4 @@ EOF
 "
 sudo su $ASA -c "cat ~$ASA/.ssh/id_rsa.pub > ~$ASA/.ssh/authorized_keys; chmod 600 ~$ASA/.ssh/authorized_keys"
 sudo usermod -a -G wheel ansible-service-account
-echo "Now run cd ~/contrib/ansible/ ; ./setup.sh"
+echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
