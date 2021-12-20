@@ -25,7 +25,7 @@ cluster_name: cluster.local
 # Account name of remote user. Ansible will use this user account to ssh into
 # the managed machines. The user must be able to use sudo without asking
 # for password unless ansible_sudo_pass is set
-#ansible_ssh_user: ansible-service-account
+#ansible_ssh_user: root
 
 # password for the ansible_ssh_user. If this is unset you will need to set up
 # ssh keys so a password is not needed.
@@ -36,7 +36,7 @@ cluster_name: cluster.local
 
 # A list of insecure registrys you might need to define
 insecure_registrys:
-  - "gcr.io"
+#  - "gcr.io"
 
 # Required for CoreOS. CoreOS does not include a Python interpreter. The
 # pre-ansible role installs a python interpreter to /opt/bin/. For more
@@ -55,16 +55,16 @@ insecure_registrys:
 kube_service_addresses: 10.254.0.0/16
 
 # Network implementation (flannel|opencontrail|contiv)
-networking: flannel
+networking: opencontrail
 
 # External network
-# opencontrail_public_subnet: 10.1.4.0/24
+opencontrail_public_subnet: 10.1.4.0/24
 
 # Underlay network
-# opencontrail_private_subnet: 192.168.1.0/24
+opencontrail_private_subnet: 172.20.20.0/24
 
 # Data interface
-# opencontrail_interface: eth1
+opencontrail_interface: eth0
 
 # Flannel internal network (optional). When flannel is used, it will assign IP
 # addresses from this range to individual pods.

@@ -1,7 +1,13 @@
 #!/bin/bash -x
 ASA=ansible-service-account
 FQDN=spica.localdomain
-sudo dnf install -y ansible git python-netaddr golang-github-cloudflare-cfssl
+
+# pvcreate /dev/mmcblk0p4
+# vgextend fedora_fedora /dev/mmcblk0p4
+# lvextend -l 100%FREE /dev/fedora_fedora/root 
+# xfs_growfs /dev/fedora_fedora/root
+
+sudo dnf install -y ansible git python-netaddr
 cd ~
 git clone https://github.com/kubernetes/contrib.git
 cd contrib/ansible
@@ -27,7 +33,7 @@ spica.localdomain ansible_connection=local
 spica.localdomain ansible_connection=local
 EOF
 ln -nfs 1way.ini inventory/inventory
-cp -vrfp all.yml inventory/group_vars/all.yml
+cp -vrfp ~/fedora-kube/all.yml inventory/group_vars/all.yml
 sudo useradd $ASA
 sudo su $ASA -c "ssh-keygen -b 2048 -q -N '' -t rsa -f ~$ASA/.ssh/id_rsa 0>&-"
 sudo su $ASA ssh localhost
@@ -48,14 +54,26 @@ sudo usermod -a -G wheel ansible-service-account
 sed -i 's/    - libselinux-python/    - python3-libselinux\n    - ebtables\n    - device-mapper-libs\n/'  ./roles/pre-ansible/tasks/fedora-dnf.yml
 
 # 2. etcd
-dnf -y install golang-github-cloudflare-cfssl
+sudo dnf -y install golang-github-cloudflare-cfssl
 sed -i 's/^node_ips.*/node_ips=${NODE_IPS[0]}/' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 sed -i 's/^curl.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 sed -i 's/^chmod.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 
 # 3. docker
-sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
 sudo mkdir -p /etc/docker
+sudo dnf -y install moby-engine docker-compose
+sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
+sudo systemctl enable docker
+sudo systemctl start docker
+# sudo systemctl status docker
+
+# 4. flannel
+#sed -i 's/ set / put /' ~/contrib/ansible/roles/flannel/tasks/config.yml
+#sed -i 's/--ca-file=/--cacert=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
+#sed -i 's/--cert-file=/--cert=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
+#sed -i 's/--key-file=/--key=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
+#sed -i 's/--no-sync / /' ~/contrib/ansible/roles/flannel/tasks/config.yml
+#sed -i 's/--peers=/--endpoints=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
 
 
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
