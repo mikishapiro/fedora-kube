@@ -61,10 +61,12 @@ sed -i 's/^chmod.*//' ~/contrib/ansible/roles/etcd/files/make-ca-cert.sh
 
 # 3. docker
 sudo mkdir -p /etc/docker
-sudo dnf -y install moby-engine docker-compose
-sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
+sudo rm -rf /etc/docker/*
+sudo dnf -y reinstall moby-engine
 sudo systemctl enable docker
 sudo systemctl start docker
+sudo dnf -y install docker-compose
+sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
 # sudo systemctl status docker
 
 # 4. flannel
