@@ -55,7 +55,7 @@ insecure_registrys:
 kube_service_addresses: 10.254.0.0/16
 
 # Network implementation (flannel|opencontrail|contiv)
-networking: opencontrail
+networking: contriv
 
 # External network
 opencontrail_public_subnet: 10.1.4.0/24
@@ -83,9 +83,9 @@ flannel_host_prefix: 24
 
 # Create a default Contiv network for providing connectivity among pods
 # networking: contiv must be set to use Contiv networking
-#contiv_default_network: true
-#contiv_default_subnet: 172.16.0.0/16
-#contiv_default_gw: 172.16.0.1
+contiv_default_network: true
+contiv_default_subnet: 172.16.0.0/16
+contiv_default_gw: 172.16.0.1
 
 # Set to false to disable logging with elasticsearch
 cluster_logging: false

@@ -80,7 +80,10 @@ sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/
 #sed -i 's/--no-sync / /' ~/contrib/ansible/roles/flannel/tasks/config.yml
 #sed -i 's/--peers=/--endpoints=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
 
-# master
+# 5. master
 # this: KUBE_API_ARGS="{{ kube_apiserver_options|join(' ') }} {{ kube_apiserver_additional_options|join(' ') }}" doesn't contain --service-account-signing-key-file= and --service-account-issuer=
 sed -i 's@KUBE_API_ARGS=.*@KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --token-auth-file=/etc/kubernetes/tokens/known_tokens.csv --service-account-key-file=/etc/kubernetes/certs/server.crt --service-account-signing-key-file=/etc/kubernetes/certs/server.key --service-account-issuer=https://kubernetes.default.svc.cluster.local --bind-address=0.0.0.0 --apiserver-count=1"@'  ~/contrib/ansible/roles/master/templates/apiserver.j2 
+
+# 6. pyyaml
+sed -i 's/PyYAML/python3-pyyaml/' ~/contrib/ansible/roles/kubernetes-addons/tasks/generic-install.yml
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
