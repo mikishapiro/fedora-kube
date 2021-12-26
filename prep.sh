@@ -68,8 +68,11 @@ sudo systemctl start docker
 sudo dnf -y install docker-compose
 sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/tasks/main.yml
 # sudo systemctl status docker
+# 4. SDN
+# openconntrail
+# sed -i 's@https://github.com/Juniper/contrail-build@https://github.com/tungstenfabric/tf-build@' ~/contrib/ansible/roles/opencontrail/templates/Dockerfile.redhat.j2
 
-# 4. flannel
+# flannel
 #sed -i 's/ set / put /' ~/contrib/ansible/roles/flannel/tasks/config.yml
 #sed -i 's/--ca-file=/--cacert=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
 #sed -i 's/--cert-file=/--cert=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
@@ -77,5 +80,7 @@ sed -i 's/| version_compare/is version_compare/' ~/contrib/ansible/roles/docker/
 #sed -i 's/--no-sync / /' ~/contrib/ansible/roles/flannel/tasks/config.yml
 #sed -i 's/--peers=/--endpoints=/' ~/contrib/ansible/roles/flannel/tasks/config.yml
 
-
+# master
+# this: KUBE_API_ARGS="{{ kube_apiserver_options|join(' ') }} {{ kube_apiserver_additional_options|join(' ') }}" doesn't contain --service-account-signing-key-file= and --service-account-issuer=
+sed -i 's@KUBE_API_ARGS=.*@KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --token-auth-file=/etc/kubernetes/tokens/known_tokens.csv --service-account-key-file=/etc/kubernetes/certs/server.crt --service-account-signing-key-file=/etc/kubernetes/certs/server.key --service-account-issuer=https://kubernetes.default.svc.cluster.local --bind-address=0.0.0.0 --apiserver-count=1"@'  ~/contrib/ansible/roles/master/templates/apiserver.j2 
 echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
