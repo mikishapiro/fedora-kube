@@ -86,4 +86,4 @@ sed -i 's@KUBE_API_ARGS=.*@KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/
 
 # 6. pyyaml
 sed -i 's/PyYAML/python3-pyyaml/' ~/contrib/ansible/roles/kubernetes-addons/tasks/generic-install.yml
-echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh"
+echo "Now run cd ~/contrib/ansible/scripts ; ./deploy-cluster.sh && mkdir -p ~/.kube && cp /etc/kubernetes/kubectl.kubeconfig ~/.kube/config"
